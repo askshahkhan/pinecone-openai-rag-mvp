@@ -9,7 +9,7 @@ load_dotenv()
 OPENAI_API_KEY = os.environ["OPENAI_API_KEY"]
 PINECONE_API_KEY = os.environ["PINECONE_API_KEY"]
 PINECONE_ENV = os.environ["PINECONE_ENV"]
-INDEX_NAME = os.getenv("INDEX_NAME", "rag-demo")
+INDEX_NAME = os.getenv("INDEX_NAME")
 
 # OpenAI client
 openai_client = OpenAI(api_key=OPENAI_API_KEY)
