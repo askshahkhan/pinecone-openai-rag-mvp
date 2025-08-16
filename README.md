@@ -1,0 +1,1 @@
+# pinecone-openai-rag-mvp
