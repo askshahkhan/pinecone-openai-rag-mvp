@@ -21,9 +21,4 @@ pinecone.init(api_key=PINECONE_API_KEY, environment=PINECONE_ENV)
 if INDEX_NAME not in pinecone.list_indexes():
     pinecone.create_index(INDEX_NAME, dimension=1536)
 
-# Handle both old/new return types (some SDKs return list/objects differently)
-try:
-    index = pinecone.Index(INDEX_NAME)
-except Exception:
-    # Fallback: sometimes list_indexes returns objects; just construct directly
-    index = pinecone.Index(INDEX_NAME)
+index = pinecone.Index(INDEX_NAME)
