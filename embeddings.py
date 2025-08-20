@@ -1,19 +1,23 @@
 from typing import List
-from config import openai_client
-
-EMBED_MODEL = "text-embedding-3-small"  # 1536-dim
+from config import Config
 
 # Purpose of this is to put words into numbers
 # Turning sentences into vectors that represents their meaning
 # List of numbers is called an embedding
 
-def embed_text(text: str) -> List[float]:
-    """Convert text into an embedding vector."""
-    resp = openai_client.embeddings.create(
-        input=text,
-        model=EMBED_MODEL
-    )
-    return resp.data[0].embedding
+class Embedder:
+    EMBED_MODEL = "text-embedding-3-small"  # 1536-dim
+
+    def __init__(self, config: Config):
+        self.openai_client = config.openai_client
+
+    def embed_text(self, text: str) -> List[float]:
+        """Convert text into an embedding vector."""
+        resp = self.openai_client.embeddings.create(
+            input=text,
+            model=self.EMBED_MODEL
+        )
+        return resp.data[0].embedding
 
 # vec = embed_text("Hello world")
 # It sends the words "Hello world" to OpenAI’s embedding model (text-embedding-3-small)
