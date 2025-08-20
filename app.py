@@ -23,7 +23,7 @@ tab1, tab2 = st.tabs(["Upsert Docs", "Ask Question"])
 
 # --------- Upsert Docs ---------
 with tab1:
-    st.header("📝 Upsert Documents")
+    st.header("Upsert Documents")
     docs_input = st.text_area(
         "Enter documents (one per line):",
         height=200
