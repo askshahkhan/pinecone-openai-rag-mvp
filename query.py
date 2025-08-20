@@ -1,33 +1,15 @@
-from config import Config
-from embeddings import Embedder
+from langchain_openai import ChatOpenAI
+from langchain.chains import RetrievalQA
 
 class QueryEngine:
-    def __init__(self, config: Config, embedder: Embedder):
-        self.config = config
-        self.embedder = embedder
-        self.index = config.pc.Index(config.INDEX_NAME)
-        self.openai_client = config.openai_client
-
-    def ask_question(self, question: str, top_k: int = 3) -> str:
-        query_embedding = self.embedder.embed_text(question)
-        results = self.index.query(vector=query_embedding, top_k=top_k, include_metadata=True)
-        context = "\n".join([match["metadata"]["text"] for match in results["matches"]])
-        prompt = (
-            f"Answer the following question using only the context below.\n\n"
-            f"Context:\n{context}\n\n"
-            f"Question: {question}\nAnswer:"
+    def __init__(self, vectorstore, model: str = "gpt-3.5-turbo"):
+        self.llm = ChatOpenAI(model=model)
+        self.qa_chain = RetrievalQA.from_chain_type(
+            llm=self.llm,
+            retriever=vectorstore.as_retriever(),
+            chain_type="stuff"
         )
-        response = self.openai_client.chat.completions.create(
-            model="gpt-3.5-turbo",
-            messages=[{"role": "user", "content": prompt}]
-        )
-        return response.choices[0].message.content
 
-# Example usage:
-if __name__ == "__main__":
-    config = Config()
-    embedder = Embedder(config)
-    engine = QueryEngine(config, embedder)
-    question = "What is special about the Clock of Drelmere?"
-    answer = engine.ask_question(question)
-    print(answer)
+    def ask(self, question: str) -> str:
+        """Ask a question and get an answer."""
+        return self.qa_chain.run(question)
